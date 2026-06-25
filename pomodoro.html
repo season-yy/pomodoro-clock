@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🍅 姚雨时钟</title>
+<title>🍓 姚雨时钟</title>
 <style>
   :root {
     --red: #E84D3D;
@@ -434,8 +434,8 @@
 <div class="app">
   <!-- 头部 -->
   <div class="header">
-    <h1>🍅 姚雨时钟</h1>
-    <p class="subtitle">专注 25 分钟，休息 5 分钟</p>
+    <h1>🍓 姚雨时钟</h1>
+    <p class="subtitle">完成一次专注，点亮一颗星星</p>
   </div>
 
   <!-- 当前任务 + 计时器 -->
@@ -469,7 +469,7 @@
     <div class="stats-bar">
       <div class="stat-item">
         <div class="stat-value" id="todayPomodoros">0</div>
-        <div class="stat-label">今日番茄</div>
+        <div class="stat-label">今日星星</div>
       </div>
       <div class="stat-item">
         <div class="stat-value" id="todayMinutes">0</div>
@@ -477,7 +477,7 @@
       </div>
       <div class="stat-item">
         <div class="stat-value" id="totalPomodoros">0</div>
-        <div class="stat-label">累计番茄</div>
+        <div class="stat-label">星星奖励</div>
       </div>
     </div>
   </div>
@@ -520,7 +520,7 @@
           onchange="updateSettings()">
       </div>
       <div class="setting-item">
-        <label>每几个番茄长休息</label>
+        <label>每几颗星星长休息</label>
         <input type="number" id="settingLongBreakInterval" value="4" min="1" max="10"
           onchange="updateSettings()">
       </div>
@@ -633,7 +633,7 @@ function requestNotificationPermission() {
 
 function notify(title, body) {
   if (notificationGranted && document.hidden) {
-    new Notification(title, { body, icon: '🍅' });
+    new Notification(title, { body, icon: '🍓' });
   }
   // 标题栏闪烁
   if (document.hidden) {
@@ -647,7 +647,7 @@ function notify(title, body) {
     // 当用户回到页面时停止
     const onVisible = () => {
       clearInterval(flash);
-      document.title = '🍅 姚雨时钟';
+      document.title = '🍓 姚雨时钟';
       document.removeEventListener('visibilitychange', onVisible);
     };
     document.addEventListener('visibilitychange', onVisible);
@@ -775,15 +775,15 @@ function completePhase() {
     }
 
     playSound('end');
-    notify('🍅 番茄完成！', '专注结束，休息一下吧。');
-    showToast(`🍅 第 ${state.completedPomodoros} 个番茄完成！`);
+    notify('⭐ 获得一颗星星！', '专注完成，休息一下吧。');
+    showToast(`⭐ 太棒了，已点亮 ${state.completedPomodoros} 颗星星！`);
 
     // 判断下次休息类型
     if (state.completedPomodoros % state.settings.longBreakInterval === 0) {
       state.phase = PHASES.LONG_BREAK;
       state.timeLeft = state.settings.longBreakMinutes * 60;
       state.totalTime = state.timeLeft;
-      notify('🌿 该长休息了', `已完成 ${state.completedPomodoros} 个番茄，休息 ${state.settings.longBreakMinutes} 分钟吧。`);
+      notify('🌿 该长休息了', `已点亮 ${state.completedPomodoros} 颗星星，休息 ${state.settings.longBreakMinutes} 分钟吧。`);
     } else {
       state.phase = PHASES.SHORT_BREAK;
       state.timeLeft = state.settings.shortBreakMinutes * 60;
@@ -792,8 +792,8 @@ function completePhase() {
   } else {
     // 休息完成
     playSound('end');
-    notify('⏰ 休息结束', '准备开始下一个番茄吧！');
-    showToast('休息结束，准备开始新的番茄！');
+    notify('⏰ 休息结束', '准备开始下一轮专注吧！');
+    showToast('休息结束，继续点亮下一颗星星！');
     state.phase = PHASES.FOCUS;
     state.timeLeft = state.settings.focusMinutes * 60;
     state.totalTime = state.timeLeft;
@@ -916,7 +916,7 @@ function updateTaskEstimate(taskId, delta) {
 function updateTimerDisplay() {
   document.getElementById('timerDisplay').textContent = formatTime(state.timeLeft);
   document.title = state.phase === PHASES.FOCUS
-    ? `🍅 ${formatTime(state.timeLeft)} - 专注中`
+    ? `🍓 ${formatTime(state.timeLeft)} - 专注中`
     : `☕ ${formatTime(state.timeLeft)} - 休息中`;
 }
 
@@ -1015,7 +1015,7 @@ function renderControls() {
 }
 
 function abandonPomodoro() {
-  if (!confirm('确定要放弃当前番茄吗？本次专注不会计入统计。')) return;
+  if (!confirm('确定要放弃当前专注吗？本次专注不会获得星星。')) return;
   clearInterval(timerInterval);
   timerInterval = null;
   state.isRunning = false;
@@ -1025,7 +1025,7 @@ function abandonPomodoro() {
   state.currentTaskId = null;
   updateUI();
   renderControls();
-  showToast('当前番茄已放弃');
+  showToast('当前专注已放弃');
 }
 
 function renderPomodoroDots() {
@@ -1056,7 +1056,7 @@ function renderTasks() {
   list.innerHTML = state.tasks.map(t => {
     const isCurrent = state.currentTaskId === t.id;
     const done = t.status === 'done';
-    const pomoText = `🍅 ${t.completedPomodoros}/${t.estimatedPomodoros}`;
+    const pomoText = `⭐ ${t.completedPomodoros}/${t.estimatedPomodoros}`;
     return `
       <li class="task-item ${done ? 'completed' : ''}">
         <div class="task-check" onclick="toggleTaskDone('${t.id}')">
